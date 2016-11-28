@@ -1,0 +1,26 @@
+{
+  "name": "system-generator",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server/app.js localhost 3000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JRRJ/system-generator.git"
+  },
+  "author": "John Jenson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JRRJ/system-generator/issues"
+  },
+  "homepage": "https://github.com/JRRJ/system-generator#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
