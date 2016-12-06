@@ -1,6 +1,7 @@
 /**
  * Star generation module
- * Currently doing this in kind of a weird way.
+ * Currently a very simple approximation.
+ * More accurate model in development.
  *
  */
 const starModule = (randomFn) => {
@@ -8,14 +9,12 @@ const starModule = (randomFn) => {
 
   class Star {
     constructor() {
-      this.mass = null;
-
       this.setInitMass();
       this.mass = this.massInit;
       this.setAgeMax();
       this.setAge();
       this.setType();
-      this.luminosity = null;
+      this.setLuminosity();
       this.radius = null;
       this.temperature = null;
       this.class = null;
@@ -59,11 +58,13 @@ const starModule = (randomFn) => {
     setAge() {
       this.age = (Math.exp(Math.random()) - 1) * 7.5657;
     }
+
     setType() {
       if (this.age > this.ageMax) {
         // star is a post-stellar object
         if (this.mass < 15) {
           this.type = 'White Dwarf';
+          this.mass *= 0.2;
         } else if (this.mass < 28) {
           this.type = 'Neutron Star';
           this.mass *= 0.1;
@@ -79,6 +80,35 @@ const starModule = (randomFn) => {
         // star is in main sequence
         this.type = 'Main Sequence';
         this.mass = this.massInit;
+      }
+    }
+    // set luminosity based on basic mass-luminosty relation
+    setLuminosity() {
+      let k = 0;
+      let a = 0;
+      if (this.type === 'Black Hole' || this.type === 'Neutron Star') {
+        this.luminosity = 0;
+      } else {
+        if (this.mass < 0.43) {
+          k = 0.23;
+          a = 2.3;
+        } else if (this.mass < 2) {
+          k = 1;
+          a = 4;
+        } else if (this.mass < 20) {
+          k = 1.5;
+          a = 3.5;
+        } else {
+          k = 3200;
+          a = 1;
+        }
+        this.luminosity = k * (this.mass ** a);
+      }
+      // really, really loose approximations
+      if (this.type === 'White Dwarf') {
+        this.luminosity *= 0.001;
+      } else if (this.type === 'Giant') {
+        this.luminosity *= 1000;
       }
     }
 
