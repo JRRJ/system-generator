@@ -6,20 +6,26 @@ const maxVal = (36 ** 8) - 1;
 const seed = Math.floor(Math.random() * maxVal).toString(36);
 const r = randomGen(seed);
 
-const starGen = require('../../generator/star');
+const Star = require('../../generator/Star');
+const StarSystem = require('../../generator/StarSystem');
 
-const star = starGen(r.random);
+const getStar = (req, res) => {
+  res.json(
+    { meta: { seed, version: process.env.npm_package_version },
+      star: new Star(r.random) });
+};
 
 const getSystem = (req, res) => {
   res.json(
-    { meta: { version: process.env.npm_package_version },
-      system: { seed, star: star.makeStar() } });
+    { meta: { seed, version: process.env.npm_package_version },
+      system: new StarSystem(r.random) });
 };
 
 const getPlanet = (req, res) => {
   res.json({ planet: null });
 };
 
+router.get('/star', getStar);
 router.get('/system', getSystem);
 router.get('/planet', getPlanet);
 
