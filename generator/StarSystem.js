@@ -1,6 +1,8 @@
 const Star = require('./Star');
 const Planet = require('./Planet');
 
+// This file is a complete mess, rethink organization and refactor
+
 // This function randomly generates a hierarchical depiction of
 // a multiple star system represented as nested arrays.
 // e.g. for Alpha Centauri: [["A", "B"], "Proxima"]
@@ -34,6 +36,7 @@ class StarSystem {
 
   constructor(rng = Math.random) {
     this.system = this.makeSystem(rng);
+    this.systemPlanets(rng, this.system);
   }
 
   starQuantity(rng) {
@@ -45,6 +48,10 @@ class StarSystem {
       stars += 1;
     }
     return stars;
+  }
+
+  orbitalPeriod(semiMajorAxis, stellarMass) {
+    return Math.sqrt((semiMajorAxis ** 3) * (1 / stellarMass));
   }
 
   randomBinaryOrbit(rng, minOrbit) {
@@ -82,9 +89,44 @@ class StarSystem {
     return { r1, r2, rcb };
   }
 
+  addPlanets(rng, cfg) { // mass, luminosity, innerLimit, outerLimit) {
+    if (cfg.innerLimit < 500) {
+      // larger stars should have more planets
+      const massFactor = Math.min(cfg.mass, 5);
+      // planets orbiting binaries should be rare, but less so for closely orbiting binaries
+      const circumbinaryFactor = cfg.innerLimit >= 1 ? (2 * Math.log(cfg.innerLimit)) : 0;
+      const planetCount =
+        Math.floor(Math.max(0, (rng() * 20) - 8 + massFactor - circumbinaryFactor));
+      const eccMod = 1 - ((planetCount - 1) / ((planetCount - 1) + 3));
+      const planets = [];
+      let minOrbit = cfg.innerLimit;
+      for (let i = 0; i < planetCount && minOrbit < 500; i += 1) {
+        const planet = new Planet(rng, { minOrbit, luminosity: cfg.luminosity, eccMod });
+        if (planet.orbit.sMA > cfg.outerLimit) break;
+        planets.push(planet);
+        minOrbit = planet.orbit.sMA;
+      }
+      return planets;
+    }
+  }
+
+  systemPlanets(rng, element) {
+    if (element.star) {
+      element.planets = this.addPlanets(rng, {
+        mass: element.star.mass,
+        luminosity: element.star.luminosity,
+        innerLimit: 0,
+        outerLimit: element.outerLimit || 1000,
+      });
+    } else {
+      this.systemPlanets(rng, element.barycenter.A);
+      this.systemPlanets(rng, element.barycenter.B);
+    }
+  }
+
   makeSystem(rng) {
     const stars = [];
-    const numStars = 3//this.starQuantity(rng);
+    const numStars = this.starQuantity(rng);
     if (numStars === 1) {
       return { star: new Star(rng) };
     }
@@ -92,8 +134,10 @@ class StarSystem {
       stars.push(new Star(rng));
     }
     const hierarchy = hierarchyBuilder(stars.sort((a, b) => a.mass > b.mass), rng);
+
     const hierarcyFormatter = (element) => {
-      if (Array.isArray(element)) { // barycenter
+      if (Array.isArray(element)) {
+        // element is a barycenter
         const bc = { barycenter: {} };
         const bcA = bc.barycenter.A = hierarcyFormatter(element[0]);
         const bcB = bc.barycenter.B = hierarcyFormatter(element[1]);
@@ -102,14 +146,16 @@ class StarSystem {
         if (bcB.innerLimit) minOrbit += bcB.innerLimit;
         bc.orbit = this.randomBinaryOrbit(rng, minOrbit * 3);
         bc.mass = bcA.mass + bcB.mass;
+        bc.luminosity = bcA.luminosity + bcB.luminosity;
+        bc.orbit.period = this.orbitalPeriod(bc.orbit.sMA, bc.mass);
         const { r1, r2, rcb } =
           this.stabilityRegions(bcA.mass, bcB.mass, bc.orbit.sMA, bc.orbit.eccentricity);
         bcA.outerLimit = r1;
         bcB.outerLimit = r2;
         bc.innerLimit = rcb;
         return bc;
-      } // star
-      return { star: element, mass: element.mass };
+      } // element is a star
+      return { star: element, mass: element.mass, luminosity: element.luminosity };
     };
     return hierarcyFormatter(hierarchy);
   }

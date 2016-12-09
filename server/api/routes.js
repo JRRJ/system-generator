@@ -18,7 +18,7 @@ const getStar = (req, res) => {
 const getSystem = (req, res) => {
   res.json(
     { meta: { seed, version: process.env.npm_package_version },
-      system: new StarSystem(r.random) });
+      system: new StarSystem(r.random).system });
 };
 
 const getPlanet = (req, res) => {
