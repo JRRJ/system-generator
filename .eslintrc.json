@@ -1,5 +1,9 @@
 {
     "extends": "airbnb",
+    "env": {
+      "browser": true,
+      "node": true
+    },
     "rules": {
       "no-mixed-operators": ["error", {"allowSamePrecedence": true}]      
     }
