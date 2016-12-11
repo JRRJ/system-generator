@@ -1,0 +1,14 @@
+.barycenter {
+  border-left: 3px solid black;
+  padding-left: 12px;
+}
+
+.planets {
+  border-left: 1px solid #9AC;
+  padding-left: 14px;  
+}
+
+li.planet {
+  list-style: none;
+  border-bottom: 2px solid #ACF;
+}
