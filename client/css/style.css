@@ -10,5 +10,21 @@
 
 li.planet {
   list-style: none;
+  border: 2px solid #ACF;
+  border-bottom: 0;
+  height:200px;
+}
+
+li.planet:last-child {
   border-bottom: 2px solid #ACF;
+}
+
+.planet-image {
+  float: left;
+  margin-right: 5px;
+}
+
+.planet-info {
+  float: none;
+  padding: 5px;
 }

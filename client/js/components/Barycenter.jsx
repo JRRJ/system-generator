@@ -1,5 +1,6 @@
 import React from 'react';
 import Star from './Star';
+import Planets from './Planets';
 
 const Barycenter = (props) => {
   const a = props.system.barycenter.A;
@@ -18,6 +19,7 @@ const Barycenter = (props) => {
         <div>Orbit: {props.system.orbit.sMA.toFixed(3)} AU</div>
         <div>Period: {props.system.orbit.period.toFixed(3)} Years</div>
       </div>
+      <Planets planets={props.system.planets} />
     </div>
   );
 };

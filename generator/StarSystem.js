@@ -90,15 +90,16 @@ class StarSystem {
   }
 
   addPlanets(rng, cfg) { // mass, luminosity, innerLimit, outerLimit) {
+    const planets = [];
     if (cfg.innerLimit < 500) {
       // larger stars should have more planets
-      const massFactor = Math.min(cfg.mass, 5);
+      const massFactor = Math.min(cfg.mass * 3, 6);
       // planets orbiting binaries should be rare, but less so for closely orbiting binaries
       const circumbinaryFactor = cfg.innerLimit >= 1 ? (2 * Math.log(cfg.innerLimit)) : 0;
       const planetCount =
-        Math.floor(Math.max(0, (rng() * 20) - 8 + massFactor - circumbinaryFactor));
+        Math.floor(Math.max(0, ((rng() + rng()) * 10) - 8 + massFactor - circumbinaryFactor));
+      console.log(planetCount, massFactor, circumbinaryFactor);
       const eccMod = 1 - ((planetCount - 1) / ((planetCount - 1) + 3));
-      const planets = [];
       let minOrbit = cfg.innerLimit;
       for (let i = 0; i < planetCount && minOrbit < 500; i += 1) {
         const planet = new Planet(rng, { minOrbit, luminosity: cfg.luminosity, eccMod });
@@ -106,8 +107,8 @@ class StarSystem {
         planets.push(planet);
         minOrbit = planet.orbit.sMA;
       }
-      return planets;
     }
+    return planets;
   }
 
   systemPlanets(rng, element) {
@@ -119,6 +120,12 @@ class StarSystem {
         outerLimit: element.outerLimit || 1000,
       });
     } else {
+      element.planets = this.addPlanets(rng, {
+        mass: element.mass,
+        luminosity: element.luminosity,
+        innerLimit: element.innerLimit,
+        outerLimit: element.outerLimit || 1000,
+      });
       this.systemPlanets(rng, element.barycenter.A);
       this.systemPlanets(rng, element.barycenter.B);
     }

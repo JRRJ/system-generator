@@ -10,8 +10,13 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = { meta: { seed: 'n/a' }, system: {} };
+    // based on recs in docs for react/jsx-no-bind
+    this.newSystem = this.newSystem.bind(this);
   }
   componentWillMount() {
+    this.newSystem();
+  }
+  newSystem() {
     getSystem().then((system) => {
       console.log(system);
       this.setState(system);
@@ -27,6 +32,7 @@ class Main extends React.Component {
     return (
       <div>
         <h1>{this.state.meta.seed}</h1>
+        <button onClick={this.newSystem}>New System</button>
         {firstChild}
       </div>
     );

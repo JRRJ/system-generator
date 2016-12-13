@@ -17,11 +17,11 @@ const sizeClassification = {
 };
 
 // will need to change the overall organization of system generation,
-// right now may generate entire planet that gets tossed out if outside roche limit;
+// right now may generate entire planet that gets tossed out if outside limit;
 
 class Planet {
   constructor(rng = Math.random, cfg) {
-    console.log(cfg);
+    // console.log(cfg);
     this.setMass(rng);
     this.setSize(rng);
     this.gravity = this.mass / (this.size ** 2);
@@ -40,7 +40,7 @@ class Planet {
     } else if (this.mass > 1) {
       this.size = this.mass ** 0.5;
     } else {
-      this.size = this.mass ** 0.29;
+      this.size = this.mass ** 0.3;
     }
     this.size *= (0.5 + ((rng() + rng()) / 2));
   }
