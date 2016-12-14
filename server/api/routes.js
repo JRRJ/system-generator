@@ -11,7 +11,7 @@ const Star = require('../../generator/Star');
 const StarSystem = require('../../generator/StarSystem');
 
 const getStar = (req, res) => {
-  seed = seedGen();
+  seed = req.query.seed || seedGen();
   r = randomGen(seed);
   res.json(
     { meta: { seed, version: process.env.npm_package_version },
@@ -19,19 +19,14 @@ const getStar = (req, res) => {
 };
 
 const getSystem = (req, res) => {
-  seed = seedGen();
+  seed = req.query.seed || seedGen();
   r = randomGen(seed);
   res.json(
     { meta: { seed, version: process.env.npm_package_version },
       system: new StarSystem(r.random).system });
 };
 
-const getPlanet = (req, res) => {
-  res.json({ planet: null });
-};
-
 router.get('/star', getStar);
 router.get('/system', getSystem);
-router.get('/planet', getPlanet);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 /**
- * Star generation module
+ * Star class
  * Currently a very simple approximation.
  * More accurate model in development.
  *
@@ -22,8 +22,9 @@ class Star {
    * Generate random solar mass based on Kroupa IMF
    * See section 2.3 from Kroupa et al. 2011:
    * "The stellar and sub-stellar IMF of simple and composite populations"
-   * This form of the IMF excludes brown dwarfs.
+   * (Note: This IMF might underestimate brown dwarfs.)
    *
+   * @param {function} rng - The random variable function
    * @param {number} forceRandomVal - Value between 1 and 0, for testing purposes only
    * @return {number} A random solar mass between ~0.01 and ~147
    */
@@ -51,7 +52,8 @@ class Star {
    * Nonlinear age generator, slight bias towards newer stars
    * Need more research to come up with better method.
    *
-   * @return {number} star's actual age in billions of years
+   * @return {number} star's actual age in billions of years,
+   *    between 0 and 13
    */
   setAge(rng) {
     this.age = (Math.exp(rng()) - 1) * 7.5657;
@@ -133,6 +135,7 @@ class Star {
       } else if (this.mass < 150) {
         this.class = `O${subClassification(this.mass, 18, 150)}V`;
       }
+    // c
     } else if (this.type === 'Giant') {
       this.class = 'M2III';
     } else if (this.type === 'White Dwarf') {

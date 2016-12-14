@@ -3,11 +3,12 @@ const Planet = require('./Planet');
 
 // This file is a complete mess, rethink organization and refactor
 
-// This function randomly generates a hierarchical depiction of
-// a multiple star system represented as nested arrays.
-// e.g. for Alpha Centauri: [["A", "B"], "Proxima"]
-// or Castor: [[["Aa", "Ab"], ["Ba", "Bb"]], ["Ca", "Cb"]]
-
+/**
+ * This function randomly generates a hierarchical depiction of
+ * a multiple star system represented as nested arrays.
+ * e.g. for Alpha Centauri: [["A", "B"], "Proxima"]
+ * or Castor: [[["Aa", "Ab"], ["Ba", "Bb"]], ["Ca", "Cb"]]
+ */
 const hierarchyBuilder = (arr, rng = Math.random) => {
   const hierarchy = [];
   hierarchy.push(arr[0]);
@@ -43,7 +44,9 @@ class StarSystem {
     let stars = 1;
     while (stars < 8) {
       if (stars < 3) {
+        // 25% chance of additional star
         if (rng() > 0.25) { break; }
+        // only 15% if system is already ternary or higher
       } else if (rng() > 0.15) { break; }
       stars += 1;
     }
@@ -96,8 +99,9 @@ class StarSystem {
       const massFactor = Math.min(cfg.mass * 3, 6);
       // planets orbiting binaries should be rare, but less so for closely orbiting binaries
       const circumbinaryFactor = cfg.innerLimit >= 1 ? (2 * Math.log(cfg.innerLimit)) : 0;
+      // ~0-15? this needs more consideration.
       const planetCount =
-        Math.floor(Math.max(0, ((rng() + rng()) * 10) - 8 + massFactor - circumbinaryFactor));
+        Math.floor(Math.max(0, ((rng() + rng()) * 7) - 2 + massFactor - circumbinaryFactor));
       console.log(planetCount, massFactor, circumbinaryFactor);
       const eccMod = 1 - ((planetCount - 1) / ((planetCount - 1) + 3));
       let minOrbit = cfg.innerLimit;

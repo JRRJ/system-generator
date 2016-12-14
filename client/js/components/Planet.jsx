@@ -35,7 +35,7 @@ class Planet extends React.Component {
           <div>Size: {this.props.planet.size.toPrecision(3)} Earth radii</div>
           <div>Gravity: {this.props.planet.gravity.toPrecision(3)} Earth gravity</div>
           <div>Orbit: {this.props.planet.orbit.sMA.toPrecision(3)} AU</div>
-          <div>Temperature: {this.props.planet.tempEff.toPrecision(3)} K</div>
+          <div>Temperature: {this.props.planet.tempEff.toFixed(0)} K</div>
         </div>
       </li>
     );
