@@ -36,7 +36,11 @@ class Planet extends React.Component {
           <div>Gravity: {this.props.planet.gravity.toPrecision(3)} Earth gravity</div>
           <div>Orbit: {this.props.planet.orbit.sMA.toPrecision(3)} AU</div>
           <div>Temperature: {this.props.planet.tempEff.toFixed(0)} K</div>
-        </div>
+          <div>Moons: {this.props.planet.moons.length}</div>
+        </div>    
+        <ul className="moons">
+          {this.props.planet.moons.map(moon => <li>{moon.mass}</li>)}
+        </ul>
       </li>
     );
   }
