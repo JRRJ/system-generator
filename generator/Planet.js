@@ -1,8 +1,9 @@
 const SubstellarBody = require('./SubstellarBody');
 const Moon = require('./Moon');
 
-// not using this at all right now:
-// upper limits
+// anthropocentric classification system using temperature and mass
+// values represent upper limits
+/*
 const tempClassification = {
   freezing: 223,
   cold: 273,
@@ -19,6 +20,7 @@ const sizeClassification = {
   jovian: 4000,
   brownDwarf: 25000,
 };
+*/
 
 // will need to change the overall organization of system generation,
 // right now may generate entire planet that gets tossed out if outside limit;
@@ -32,6 +34,7 @@ class Planet extends SubstellarBody {
     this.orbit = {};
     this.setOrbit(rng, cfg.minOrbit, cfg.eccMod);
     this.setTemp(cfg.luminosity);
+    this.setHillSphere(cfg.parentMass);
     this.addMoons(rng);
   }
   // generates a number between 4000 and 0.004 Earth masses
@@ -44,15 +47,33 @@ class Planet extends SubstellarBody {
     this.tempEff = 277 * (luminosity ** 0.25) / (this.orbit.sMA ** 0.5);
   }
 
+  // set Hill Sphere in AU
+  setHillSphere(parentMass) {
+    this.hillSphere = this.orbit.sMA * (1 - this.orbit.eccentricity) *
+    ((this.mass / (999000 * parentMass)) ** (1 / 3));
+  }
+
+  // refactor to factory pattern?
+  // and add in Roche Limit as part of refactor.
   addMoons(rng) {
     this.moons = [];
-    // depends on mass and orbit.
+    // count depends on mass and orbit.
+    // probably not random enough?
     const moonCount =
       Math.floor((rng() * 8) + (2 * Math.log10(this.mass))
       - (5 - (4 * Math.log10(Math.min(this.orbit.sMA, 10)))));
-    let minOrbit = 0;
+
+    const eccMod = 1 - ((moonCount - 1) / ((moonCount - 1) + 3));
+
+    let minOrbit = rng() * (this.hillSphere / 3) * (0.5 / moonCount);
+
     for (let i = 0; i < moonCount; i += 1) {
-      const moon = new Moon(rng, { planetMass: this.mass });
+      const moon = new Moon(rng,
+        { planetMass: this.mass, minOrbit, eccMod, planetTemp: this.temperature });
+      if (moon.orbit.sMA > (1 / 3 * this.hillSphere)) {
+        console.log('moons ejected:', moonCount - i);
+        break;
+      }
       this.moons.push(moon);
       minOrbit = moon.orbit.sMA;
     }

@@ -106,7 +106,7 @@ class StarSystem {
       const eccMod = 1 - ((planetCount - 1) / ((planetCount - 1) + 3));
       let minOrbit = cfg.innerLimit;
       for (let i = 0; i < planetCount && minOrbit < 500; i += 1) {
-        const planet = new Planet(rng, { minOrbit, luminosity: cfg.luminosity, eccMod });
+        const planet = new Planet(rng, { minOrbit, parentMass: cfg.mass, luminosity: cfg.luminosity, eccMod });
         if (planet.orbit.sMA > cfg.outerLimit) break;
         planets.push(planet);
         minOrbit = planet.orbit.sMA;

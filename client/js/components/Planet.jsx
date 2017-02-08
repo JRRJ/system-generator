@@ -37,13 +37,15 @@ class Planet extends React.Component {
           <div>Orbit: {this.props.planet.orbit.sMA.toPrecision(3)} AU</div>
           <div>Temperature: {this.props.planet.tempEff.toFixed(0)} K</div>
           <div>Moons: {this.props.planet.moons.length}</div>
-        </div>    
-        <ul className="moons">
-          {this.props.planet.moons.map(moon => <li>{moon.mass}</li>)}
-        </ul>
+        </div>
+        <div className="moon-info">
+          <ul className="moons">
+            {this.props.planet.moons.map(moon => <li>{moon.mass}</li>)}
+          </ul>
+        </div>
       </li>
     );
   }
-};
+}
 
 module.exports = Planet;

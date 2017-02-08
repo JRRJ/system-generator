@@ -25,6 +25,19 @@ li.planet:last-child {
 }
 
 .planet-info {
+  display: inline-block;
+  width: 20%;
+  min-width: 200px;
   float: none;
+  padding: 5px;
+}
+
+/*temporary styles*/
+
+.moon-info {
+  display: inline-block;
+  width: 20%;
+  min-width: 200px;
+  overflow: hidden;
   padding: 5px;
 }
