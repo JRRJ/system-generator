@@ -12,7 +12,11 @@ li.planet {
   list-style: none;
   border: 2px solid #ACF;
   border-bottom: 0;
-  height:200px;
+  min-height:200px;
+}
+
+.habitable {
+  background-color: #7F7;
 }
 
 li.planet:last-child {
@@ -26,7 +30,6 @@ li.planet:last-child {
 
 .planet-info {
   display: inline-block;
-  width: 20%;
   min-width: 200px;
   float: none;
   padding: 5px;

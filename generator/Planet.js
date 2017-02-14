@@ -34,6 +34,9 @@ class Planet extends SubstellarBody {
     this.orbit = {};
     this.setOrbit(rng, cfg.minOrbit, cfg.eccMod);
     this.setTemp(cfg.luminosity);
+    this.setDensity();
+    this.setEscapeVelocity();
+    this.setESI();
     this.setHillSphere(cfg.parentMass);
     this.addMoons(rng);
   }
@@ -69,7 +72,7 @@ class Planet extends SubstellarBody {
 
     for (let i = 0; i < moonCount; i += 1) {
       const moon = new Moon(rng,
-        { planetMass: this.mass, minOrbit, eccMod, planetTemp: this.temperature });
+        { planetMass: this.mass, minOrbit, eccMod, planetTemp: this.tempEff });
       if (moon.orbit.sMA > (1 / 3 * this.hillSphere)) {
         console.log('moons ejected:', moonCount - i);
         break;

@@ -1,8 +1,6 @@
 import React from 'react';
 
-import Moons from './Moons';
-
-class Planet extends React.Component {
+class Moon extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -39,11 +37,10 @@ class Planet extends React.Component {
           <div>Orbit: {this.props.planet.orbit.sMA.toPrecision(3)} AU</div>
           <div>Temperature: {this.props.planet.tempEff.toFixed(0)} K</div>
           <div>ESI: {this.props.planet.ESI.toFixed(3)}</div>
-          {this.props.planet.moons !== undefined && <Moons moons={this.props.planet.moons} />}
         </div>
       </li>
     );
   }
 }
 
-module.exports = Planet;
+module.exports = Moon;

@@ -3,11 +3,14 @@
 class SubstellarBody {
   constructor() {
     // console.log(cfg);
-    this.mass = 0;
-    this.size = 0;
-    this.gravity = 0;
-    this.orbit = {};
-    this.tempEff = 0;
+    this.mass = 0;      // Earth Masses
+    this.size = 0;      // Earth Radii
+    this.gravity = 0;   // Earth Gravity
+    this.density = 0;   // Earth Density
+    this.orbit = {};    // {sMA: AU, eccentricity: unitless}
+    this.tempEff = 0;   // degrees K
+    this.escapeVelocity = 0;   // km/s
+    this.ESI = 1;       // unitless
   }
 
   setSize(rng) {
@@ -30,9 +33,9 @@ class SubstellarBody {
     this.density = this.mass / (this.size ** 3);
   }
 
-  // setEscapeVelocity() {
-  //   this.escapeVelocity = this.
-  // }
+  setEscapeVelocity() {
+    this.escapeVelocity = Math.sqrt(this.gravity * this.size) * 11.186;
+  }
 
   setOrbit(rng, prevOrbit, eccMod) {
     this.orbit.eccentricity = eccMod * (rng() ** 3);
@@ -41,6 +44,15 @@ class SubstellarBody {
     } else {
       this.orbit.sMA = (prevOrbit * ((rng() * 1.5) + 1.05)) / (1 - this.orbit.eccentricity);
     }
+  }
+
+  setESI() {
+    const ESIprop = (planetVal, earthVal, weight) =>
+      (1 - Math.abs((planetVal - earthVal) / (planetVal + earthVal))) ** (weight / 4);
+    this.ESI *= ESIprop(this.size, 1, 0.57);
+    this.ESI *= ESIprop(this.density, 1, 1.07);
+    this.ESI *= ESIprop(this.escapeVelocity, 11.186, 0.7);
+    this.ESI *= ESIprop(this.tempEff, 288, 5.58);
   }
 
 }

@@ -7,7 +7,10 @@ class Moon extends SubstellarBody {
     this.setOrbit(rng, cfg.minOrbit, cfg.eccMod);
     this.setSize(rng);
     this.setGravity();
-    this.tempEff = cfg.plentTemp;
+    this.tempEff = cfg.planetTemp;
+    this.setDensity();
+    this.setEscapeVelocity();
+    this.setESI();
   }
   // generates value for moon mass between planet's mass down to 0.0001 Earth Masses
   setMass(rng, planetMass) {
